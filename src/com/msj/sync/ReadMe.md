@@ -264,7 +264,7 @@ Map<Object,Object> map = Collections.synchronizedMap(new HashMap<>());
 - 生产者和消费者也是一个非常经典的多线程模式，我们在实际开发中应用非常广泛的思想概念。在生产-消费模式中，通常有两类线程，即若干个生产者的线程和若干个消费者的线程。生产者线程负责提交用户请求，消费者线程则负责具体处理生产者提交的任务，在生产者和消费者之间通过共享内存缓存区进行通信。
 <img src = "./picture/生产者-消费者模式.png">
 
-### 第五天 线程池
+### 5 线程池
 
 #### Executor框架
 - Executors创建线程池的方法：
@@ -356,3 +356,13 @@ Lock lock = new ReentranLock(boolean fair);
 #### ReentrantReadWriteLock读写锁
 - 实现读写分离的锁。在高并发的情况下，尤其是读多写少的情况下，性能要远高于重入锁。示例：com.msj.sync.lock.lock2.ReentrantReadWriteLock
 - 之前学synchronized，ReentrantLock时，我们知道，同一时间内，只能有一个线程进行访问被锁定的代码，那么读写锁则不同，其本质是分成两个锁，即读锁，写锁。在读锁下，多个线程可以并发的进行访问，但是在写锁的时候，只能一个个的顺序访问。
+
+#### 分布式锁
+- 一个服务部署到两台服务器上，相同的服务实现同步。可以使用zookeeper的分布式锁。
+
+#### 锁的优化
+- 避免思索
+- 减少锁的持有时间
+- 减小锁的粒度
+- 锁的分离
+- 尽量使用无锁的操作，如原子类（Atomic系列类），voliate
