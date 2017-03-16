@@ -3,13 +3,13 @@
 #### 线程安全
 - 线程安全概念：当多个线程访问某一个类（对象或方法）时，这个类始终都能表现出正确的行为，那么这个类（对象或方法）就是线程安全的。
 - synchronized:可以在任意对象及方法上加锁，而加锁的这段代码称为“互斥去”或“临界区”
-- 当多个线程访问myThread的run方法时，以排队的方式进行处理(这里排队是按照CPU分配的先后顺序而定的)，***一个线程想要执行synchronized修饰的方法里的代码，首先是尝试获得锁，如果拿到锁，执行synchronized代码体内容；拿不到锁，这个线程就会不断的尝试获得这把锁，知道拿到为止，而且是多个线程同时去竞争这把锁。（也就是会有锁竞争的问题）***。
+- 当多个线程访问myThread的run方法时，以排队的方式进行处理(这里排队是按照CPU分配的先后顺序而定的)，***一个线程想要执行synchronized修饰的方法里的代码，首先是尝试获得锁，如果拿到锁，执行synchronized代码体内容；拿不到锁，这个线程就会不断的尝试获得这把锁，直到拿到为止，而且是多个线程同时去竞争这把锁。（也就是会有锁竞争的问题）***。
 - 多个线程同时竞争一把锁会增加cpu的消耗，有可能出现计算缓慢，严重宕机，所以一定要规划好线程的数目
-- 关键字synchronized取得的锁都是对象锁，而不是把一端代码（方法）当做锁，哪个线程先执行synchronized关键字的方法，哪个线程就持有该方法所属对象的锁（Lock），***两个对象，线程获得的就是两个不同的锁，他们互不影响（如果两个对象使用一把锁，可以在锁前面添加static,如果是对象也可以使用static volatile这样可以不用synchronized）见[MultiSyncCommonOneTest.java](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/MultiSyncCommonOneTest.java)）***。
+- 关键字synchronized取得的锁都是对象锁，而不是把一段代码（方法）当做锁，哪个线程先执行synchronized关键字的方法，哪个线程就持有该方法所属对象的锁（Lock），***两个对象，线程获得的就是两个不同的锁，他们互不影响（如果两个对象使用一把锁，可以在锁前面添加static,如果是对象也可以使用static volatile这样可以不用synchronized）见[MultiSyncCommonOneTest.java](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/MultiSyncCommonOneTest.java)）***。
 
 #### 脏读
-- 在我们对一个对象的方法加锁的时候，需要考虑业务的整体性，即为setValue/getValue方法同事加载synchronized同步关键字，保证业务(service)的原子性，不然会出现业务错误。
-- 数据库特性：A(原子性)C(一致性)I（隔离性）O（持久性）
+- 在我们对一个对象的方法加锁的时候，需要考虑业务的整体性，即为setValue/getValue方法同时加载synchronized同步关键字，保证业务(service)的原子性，不然会出现业务错误。
+- 数据库特性：A(原子性)C(一致性)I（隔离性）D（持久性）
 <img src = "./picture/oracle保持数据一致性讲解.png">
 
 #### synchronized代码块及细节
@@ -126,8 +126,7 @@ public void method(){
 
 ```
 
-### 2
-#### Volatile关键字概念，线程优化执行流程，内部原理讲解
+### 2. Volatile关键字概念，线程优化执行流程，内部原理讲解
 - volatile概念：volatile关键字的主要作用是使变量在多个线程间可见。
 <img src = "./picture/volatile关键字概念.png">
 
@@ -209,7 +208,7 @@ public class InnerSingleton {
 ```
 ### 3 同步类容器
 #### 同步类容器
-- 同步类容器都是线程安全的，但在某些场景下可能需要加锁来保护复合操作。复合类操作如：迭代、跳转、以及条件运算。这些复合操作在多线程并发地修改容器时，可能会表现出意外的行为，最经典的便是ConcurrentModificationException。原因是当容器迭代的过程中，被并发地修改了内容，这是由于早起迭代器设计的时候并没有考虑兵法修改的问题。
+- 同步类容器都是线程安全的，但在某些场景下可能需要加锁来保护复合操作。复合类操作如：迭代、跳转、以及条件运算。这些复合操作在多线程并发地修改容器时，可能会表现出意外的行为，最经典的便是ConcurrentModificationException。原因是当容器迭代的过程中，被并发地修改了内容，这是由于早起迭代器设计的时候并没有考虑并发修改的问题。
 - 同步类容器：如古老的Vector,HashTable。这些容器的同步功能其实都是有JDK的Collections.synchronized ** 等方法去创建实现的。其底层的机制无非就是用传统的synchronized关键字对每个公用的方法都进行同步，使得每次只能有一个线程访问容器的状态。这很明显不满足我们今天互联网时代高并发的需求，在保证线程安全的同时，也必须有足够好的性能
 
 ```
@@ -238,14 +237,14 @@ Map<Object,Object> map = Collections.synchronizedMap(new HashMap<>());
 - BlockingQueue接口
 <img src = "./picture/BlockingQueue接口.png"> 
 <img src = "./picture/BlockingQueue接口重要方法.png"> 
-  - ArrayBlockingQueue:阻塞队列，有界队列，不能读写分离。（队列满了再添加会抛出Queue full异常）。适用于Queue大，有峰值的情况。
-  - LinkedBlockingQueue：阻塞队列，无界嘟列，能读写分离。适合Queue不大情况。
-  - SynchronousQueue：不允许添加任何元素（不可以add()和offer()，只有阻塞了add（）才不会报异常，如下图。这是因为不是往队列添加，而是直接丢给阻塞的线程处理）。适用于数据量少，即来即走的情况。
+  -  ArrayBlockingQueue:阻塞队列，有界队列，不能读写分离。（队列满了再添加会抛出Queue full异常）。适用于Queue大，有峰值的情况。
+  -  LinkedBlockingQueue：阻塞队列，无界队列，能读写分离。适合Queue不大情况。
+  -  SynchronousQueue：不允许添加任何元素（不可以add()和offer()，只有阻塞了add（）才不会报异常，如下图。这是因为不是往队列添加，而是直接丢给阻塞的线程处理）。适用于数据量少，即来即走的情况。
   <img src = "./picture/SynchronousQueue队列能使用add情况.png">
-  - DelayQueue：带有延迟时间的Queue，元素只有当其执行的延迟时间到了，才能从队列中获取到该元素。没有大小限制，使用场景，比如对缓存超时的数据进行移除，任务超时处理，空闲连接的关闭等等。(参考[UseDelayQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UseDelayQueue.java))
-  - PriorityBlockingQueue：不遵循先进先出原则，遵循比较原则，优先级由传入的对象Compator对象决定，也就是传入队列的对象必须实现Comparable接口。（参考[UsePriorityBlockingQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UsePriorityBlockingQueue.java)）<font color="#F00">循环输出并没有排序，只有每次take时候就排序，取出优先级最高的</font>。
+  -  DelayQueue：带有延迟时间的Queue，元素只有当其执行的延迟时间到了，才能从队列中获取到该元素。没有大小限制，使用场景，比如对缓存超时的数据进行移除，任务超时处理，空闲连接的关闭等等。(参考[UseDelayQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UseDelayQueue.java))
+  -  PriorityBlockingQueue：不遵循先进先出原则，遵循比较原则，优先级由传入的对象Compator对象决定，也就是传入队列的对象必须实现Comparable接口。（参考[UsePriorityBlockingQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UsePriorityBlockingQueue.java)）<font color="#F00">循环输出并没有排序，只有每次take时候就排序，取出优先级最高的</font>。
 
-- Deque 双端队列，允许在队列的头部或尾部进行出队和入队操作。
+-  Deque 双端队列，允许在队列的头部或尾部进行出队和入队操作。
   - LinkedBlockingDeque是一个线程安全的双端队列实现，可以说他是最为复杂的一种队列，在内部实现维护了前端和后端节点，但是其没有实现读写分离，因此同一时间只能有一个线程对其进行操作。在高并发中性能远低于其他BlockingQueue。更要低于ConcurrentLinkedQueue，在jdk早期有一个非线程安全的Deque就是ArrayDeque，java6里添加了LinkedBlockingDeque来弥补多线程场景下线程安全的问题。 
 
 ### 4. 多线程的设计模式
@@ -361,7 +360,7 @@ Lock lock = new ReentranLock(boolean fair);
 - 一个服务部署到两台服务器上，相同的服务实现同步。可以使用zookeeper的分布式锁。
 
 #### 锁的优化
-- 避免思索
+- 避免死锁
 - 减少锁的持有时间
 - 减小锁的粒度
 - 锁的分离
