@@ -237,10 +237,12 @@ Map<Object,Object> map = Collections.synchronizedMap(new HashMap<>());
 - BlockingQueue接口
 <img src = "./picture/BlockingQueue接口.png"> 
 <img src = "./picture/BlockingQueue接口重要方法.png"> 
+
   -  ArrayBlockingQueue:阻塞队列，有界队列，不能读写分离。（队列满了再添加会抛出Queue full异常）。适用于Queue大，有峰值的情况。
   -  LinkedBlockingQueue：阻塞队列，无界队列，能读写分离。适合Queue不大情况。
   -  SynchronousQueue：不允许添加任何元素（不可以add()和offer()，只有阻塞了add（）才不会报异常，如下图。这是因为不是往队列添加，而是直接丢给阻塞的线程处理）。适用于数据量少，即来即走的情况。
   <img src = "./picture/SynchronousQueue队列能使用add情况.png">
+  
   -  DelayQueue：带有延迟时间的Queue，元素只有当其执行的延迟时间到了，才能从队列中获取到该元素。没有大小限制，使用场景，比如对缓存超时的数据进行移除，任务超时处理，空闲连接的关闭等等。(参考[UseDelayQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UseDelayQueue.java))
   -  PriorityBlockingQueue：不遵循先进先出原则，遵循比较原则，优先级由传入的对象Compator对象决定，也就是传入队列的对象必须实现Comparable接口。（参考[UsePriorityBlockingQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UsePriorityBlockingQueue.java)）<font color="#F00">循环输出并没有排序，只有每次take时候就排序，取出优先级最高的</font>。
 
