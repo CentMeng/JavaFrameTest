@@ -5,7 +5,7 @@
 - synchronized:可以在任意对象及方法上加锁，而加锁的这段代码称为“互斥去”或“临界区”
 - 当多个线程访问myThread的run方法时，以排队的方式进行处理(这里排队是按照CPU分配的先后顺序而定的)，***一个线程想要执行synchronized修饰的方法里的代码，首先是尝试获得锁，如果拿到锁，执行synchronized代码体内容；拿不到锁，这个线程就会不断的尝试获得这把锁，知道拿到为止，而且是多个线程同时去竞争这把锁。（也就是会有锁竞争的问题）***。
 - 多个线程同时竞争一把锁会增加cpu的消耗，有可能出现计算缓慢，严重宕机，所以一定要规划好线程的数目
-- 关键字synchronized取得的锁都是对象锁，而不是把一端代码（方法）当做锁，哪个线程先执行synchronized关键字的方法，哪个线程就持有该方法所属对象的锁（Lock），***两个对象，线程获得的就是两个不同的锁，他们互不影响（如果两个对象使用一把锁，可以在锁前面添加static,如果是对象也可以使用static volatile这样可以不用synchronized）见MultiSyncCommonOneTest.java）***。
+- 关键字synchronized取得的锁都是对象锁，而不是把一端代码（方法）当做锁，哪个线程先执行synchronized关键字的方法，哪个线程就持有该方法所属对象的锁（Lock），***两个对象，线程获得的就是两个不同的锁，他们互不影响（如果两个对象使用一把锁，可以在锁前面添加static,如果是对象也可以使用static volatile这样可以不用synchronized）见[MultiSyncCommonOneTest.java](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/MultiSyncCommonOneTest.java)）***。
 
 #### 脏读
 - 在我们对一个对象的方法加锁的时候，需要考虑业务的整体性，即为setValue/getValue方法同事加载synchronized同步关键字，保证业务(service)的原子性，不然会出现业务错误。
@@ -155,10 +155,10 @@ count.incrementAndGet();
   - wait和notify必须配合synchronized关键字使用
   - wait方法释放锁，notify方法不释放锁（wait方法调用后，其他线程可以拿到锁执行方法；notify方法则必须等到此线程synchronized代码块执行完，其他线程才能拿到锁进行执行）
 
-使用示例：参考package com.msj.sync.waitnotify
+使用示例：参考[waitnotify](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/sync/waitnotify)
 
 #### 模拟底层阻塞队列（queue）实现讲解
-上面内容实践操作，示例：com.msj.sync.MyQueue
+上面内容实践操作，示例：[MyQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/MyQueue.java)
 
 #### ThreadLocal
 - ThreadLocal:线程局部变量，是一种多线程间并发访问变量的解决方案。与其synchronized等加锁的方式不同，ThreadLocal完全不提供锁，而使用以空间换时间的手段，为每个线程提供变量的独立副本，以保障线程安全。
@@ -242,29 +242,29 @@ Map<Object,Object> map = Collections.synchronizedMap(new HashMap<>());
   - LinkedBlockingQueue：阻塞队列，无界嘟列，能读写分离。适合Queue不大情况。
   - SynchronousQueue：不允许添加任何元素（不可以add()和offer()，只有阻塞了add（）才不会报异常，如下图。这是因为不是往队列添加，而是直接丢给阻塞的线程处理）。适用于数据量少，即来即走的情况。
   <img src = "./picture/SynchronousQueue队列能使用add情况.png">
-  - DelayQueue：带有延迟时间的Queue，元素只有当其执行的延迟时间到了，才能从队列中获取到该元素。没有大小限制，使用场景，比如对缓存超时的数据进行移除，任务超时处理，空闲连接的关闭等等。(参考UseDelayQueue)
-  - PriorityBlockingQueue：不遵循先进先出原则，遵循比较原则，优先级由传入的对象Compator对象决定，也就是传入队列的对象必须实现Comparable接口。（参考UsePriorityBlockingQueue）<font color="#F00">循环输出并没有排序，只有每次take时候就排序，取出优先级最高的</font>。
+  - DelayQueue：带有延迟时间的Queue，元素只有当其执行的延迟时间到了，才能从队列中获取到该元素。没有大小限制，使用场景，比如对缓存超时的数据进行移除，任务超时处理，空闲连接的关闭等等。(参考[UseDelayQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UseDelayQueue.java))
+  - PriorityBlockingQueue：不遵循先进先出原则，遵循比较原则，优先级由传入的对象Compator对象决定，也就是传入队列的对象必须实现Comparable接口。（参考[UsePriorityBlockingQueue](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/queue/UsePriorityBlockingQueue.java)）<font color="#F00">循环输出并没有排序，只有每次take时候就排序，取出优先级最高的</font>。
 
 - Deque 双端队列，允许在队列的头部或尾部进行出队和入队操作。
   - LinkedBlockingDeque是一个线程安全的双端队列实现，可以说他是最为复杂的一种队列，在内部实现维护了前端和后端节点，但是其没有实现读写分离，因此同一时间只能有一个线程对其进行操作。在高并发中性能远低于其他BlockingQueue。更要低于ConcurrentLinkedQueue，在jdk早期有一个非线程安全的Deque就是ArrayDeque，java6里添加了LinkedBlockingDeque来弥补多线程场景下线程安全的问题。 
 
-### 4 多线程的设计模式
-#### Future模式讲解，即异步加载(见com.msj.sync.future )
+### 4. 多线程的设计模式
+#### Future模式讲解，即异步加载(见[future](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/sync/future) )
 - Future模式类似于商品订单。比如在网购时，当看中某一件商品时，就可以提交订单，当订单处理完成后，在家里等待商品送货上门即可。或者说更形象的我们发送Ajax请求的时候，页面是异步的进行后台处理，用户无须一直等待请求的结果，可以继续浏览或操作其他内容。
 <img src = "./picture/Future模式.png">
 
-#### Master-Worker模式(见com.msj.sync.masterworker)
+#### Master-Worker模式(见[masterworker](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/sync/masterworker))
 - ***并行计算，使用多线程对同一个对象进行队列操作，处理完出队***
 - Master-Worker模式是常用的并行计算模式。它的核心思想是系统由两类进程协作工作：Master进程和Worker进程。Master负责接收和分配任务，Worker负责处理子任务。当各个Worker子进程处理完成后，会将结果返回给Master，由Master做归纳和总结。其好处是能将一个大任务分解成若干个小任务，并行执行，从而提高系统的吞吐量。
 <img src = "./picture/Master-Worker模式.png">
 - Master-Worker开发引导图
 <img src = "./picture/Master-Worker模式开发引导图.png">
 
-#### 生产者-消费者模式
+#### 生产者-消费者模式(见[productorconsumer](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/sync/productorconsumer))
 - 生产者和消费者也是一个非常经典的多线程模式，我们在实际开发中应用非常广泛的思想概念。在生产-消费模式中，通常有两类线程，即若干个生产者的线程和若干个消费者的线程。生产者线程负责提交用户请求，消费者线程则负责具体处理生产者提交的任务，在生产者和消费者之间通过共享内存缓存区进行通信。
 <img src = "./picture/生产者-消费者模式.png">
 
-### 5 线程池
+### 5. 线程池
 
 #### Executor框架
 - Executors创建线程池的方法：
@@ -272,7 +272,7 @@ Map<Object,Object> map = Collections.synchronizedMap(new HashMap<>());
   - newSingleThreadExecutor()方法，创建一个线程的线程池，若空闲则执行，若没有空闲线程则暂缓在任务队列中。
   - newCachedThreadPool()方法，返回一个可根据实际情况调整线程个数的线程池，不限制最大线程数量，若有空闲的线程执行则执行任务，若无任务则不创建线程。并且每一个空闲线程会在60秒后自动回收。
   - newScheduledThreadPool()方法，该方法放回一个ScheduledExecutorService对象，但该线程可以指定线程的数量。
-- 自定义线程池(见com.msj.sync.executors)
+- 自定义线程池(见[executors](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/sync/executors/test2))
 
 ```Java
 public ThreadPoolExecutor(int corePoolSize,
@@ -290,18 +290,18 @@ public ThreadPoolExecutor(int corePoolSize,
   - 方案2：输出日志或将队列缓存其他地方（不建议缓存其他地方，因为这样还不如给队列扩容），然后有个调度的
   - job把日志记录的再重新跑一遍。
 
-### 5 Concurrent.util常用类
+### 6. Concurrent.util常用类
 - CyclicBarrier使用：
 
-假设有一个场景：每个线程代表一个跑步运动员，当运动员都准备好后，才一起出发，只要有一个人没有准备好，大家都等待。示例：com.msj.sync.executors.test3.UseCyclicBarrier
+假设有一个场景：每个线程代表一个跑步运动员，当运动员都准备好后，才一起出发，只要有一个人没有准备好，大家都等待。示例：[UseCyclicBarrier](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/executors/test3/UseCyclicBarrier.java)
 
 - CountDownLatch使用：
 
-他经常用于监听某些初始化操作，等初始化执行完毕后，通知主线程继续工作。使用场景使用于：例如方法中包含1，2方法，1方法要多线程执行，执行完毕后才能执行2方法。在1方法后执行await(),await后面写2方法。示例：com.msj.sync.executors.test3.UseCountDownLatch
+他经常用于监听某些初始化操作，等初始化执行完毕后，通知主线程继续工作。使用场景使用于：例如方法中包含1，2方法，1方法要多线程执行，执行完毕后才能执行2方法。在1方法后执行await(),await后面写2方法。示例：[UseCountDownLatch](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/executors/test3/UseCountDownLatch.java)
 
 - Callbale和Future使用：
 
-这个例子其实就是我们之前实现的Future模式。jdk给予一个实现的封装，使用非常简单。示例：com.msj.sync.executors.test3.UseFuture
+这个例子其实就是我们之前实现的Future模式。jdk给予一个实现的封装，使用非常简单。示例：[UseFuture](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/executors/test3/UseFuture.java)
 
 Future模式非常适合处理耗时很长的业务逻辑时进行使用，可以有效的减少系统的响应时间，提高系统的吞吐量。
 
@@ -309,10 +309,10 @@ Future模式非常适合处理耗时很长的业务逻辑时进行使用，可�
   - submit可以传入实现Callable接口的实例对象
   - submit方法有返回值
 
-### 6 高并发
+### 7. 高并发
 
 - 信号量
-信号量可以用来解决限流（控制系统流量）。拿到信号量的线程可以进入，否则就等待。示例见：com.msj.sync.executors.test3.UseSemaphore。一般使用Redis进行限流，比如用将用户信息放到Redis缓存里，然后记录用户访问的url，加入1分钟只允许访问60次，如果超过60次提示访问频繁。
+信号量可以用来解决限流（控制系统流量）。拿到信号量的线程可以进入，否则就等待。示例见：[UseSemaphore](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/executors/test3/UseSemaphore.java)。一般使用Redis进行限流，比如用将用户信息放到Redis缓存里，然后记录用户访问的url，加入1分钟只允许访问60次，如果超过60次提示访问频繁。
 <img src = "./picture/信号量.png">
 - 解决高并发
   - 网络端
@@ -335,14 +335,14 @@ Future模式非常适合处理耗时很长的业务逻辑时进行使用，可�
 - 秒杀方案
   - 一个单独独立的子系统(和商城主系统独立)，这样即使服务挂了，也不影响主服务。
 
-### 7 锁
+### 8. 锁
 #### 重入锁
-在需要同步的代码上部分加入锁定，但最后一定不要忘记释放锁定，不然会造成锁永远无法释放，其他线程永远进不来的情况。示例：com.msj.sync.lock.lock1.UseReentrantLock
+在需要同步的代码上部分加入锁定，但最后一定不要忘记释放锁定，不然会造成锁永远无法释放，其他线程永远进不来的情况。示例：[UseReentrantLock](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/lock/lock1/UseReentrantLock.java)
 
 #### 锁与等待/通知(类似synchronized中的wait和notify，notifyall)
-我们再使用Lock的时候，可以使用一个新的等待/通知的类，它就是Condition。这个Condition一定是针对具体某一把锁。也就是在只有锁的基础之上才会产生Condition.Condition比synchronized的wait，notify要灵活。因为Condition可以根据一个Lock创建多个Condition。
+我们再使用Lock的时候，可以使用一个新的等待/通知的类，它就是Condition。这个Condition一定是针对具体某一把锁。也就是在只有锁的基础之上才会产生Condition.Condition比synchronized的wait，notify要灵活。因为Condition可以根据一个Lock创建多个Condition,见[UseManyCondition](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/lock/lock1/UseManyCondition.java)。
 使用场景：两个方法并行计算，方法1中有的方法需要等待方法2计算完毕后，才能继续执行。
-示例：com.msj.sync.lock.lock1.useCondition
+示例：[UseCondition](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/lock/lock1/UseCondition.java)
 #### 公平锁与非公平锁
 ```Java
 //默认非公平锁
@@ -354,7 +354,7 @@ Lock lock = new ReentranLock(boolean fair);
 <img src = "./picture/Lock,Condition其他方法.png">
 
 #### ReentrantReadWriteLock读写锁
-- 实现读写分离的锁。在高并发的情况下，尤其是读多写少的情况下，性能要远高于重入锁。示例：com.msj.sync.lock.lock2.ReentrantReadWriteLock
+- 实现读写分离的锁。在高并发的情况下，尤其是读多写少的情况下，性能要远高于重入锁。示例：[ReentrantReadWriteLock](https://github.com/CentMeng/JavaFrameTest/blob/master/src/com/msj/sync/lock/lock2/UseReentrantReadWriteLock.java)
 - 之前学synchronized，ReentrantLock时，我们知道，同一时间内，只能有一个线程进行访问被锁定的代码，那么读写锁则不同，其本质是分成两个锁，即读锁，写锁。在读锁下，多个线程可以并发的进行访问，但是在写锁的时候，只能一个个的顺序访问。
 
 #### 分布式锁
