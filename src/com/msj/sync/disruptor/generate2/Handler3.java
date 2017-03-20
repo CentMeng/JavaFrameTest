@@ -1,8 +1,8 @@
 package com.msj.sync.disruptor.generate2;
 
-import bhz.generate1.Trade;
 
 import com.lmax.disruptor.EventHandler;
+import com.msj.sync.disruptor.generate1.Trade;
 
 public class Handler3 implements EventHandler<Trade> {
     @Override  
