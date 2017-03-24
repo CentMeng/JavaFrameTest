@@ -5,13 +5,32 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * @author Vincent.M mengshaojie@188.com
+ * @date 2017/3/13 下午4:41
+ * @copyright ©2017 孟少杰 All Rights Reserved
+ * @desc AIO(NIO2.0) 必须实现此方法，服务端和客户端交互处理
+ */
 public class ServerCompletionHandler implements CompletionHandler<AsynchronousSocketChannel, Server> {
 
+
+	/**
+	 * 连接成功
+	 * @param asc
+	 * @param attachment
+	 */
 	@Override
 	public void completed(AsynchronousSocketChannel asc, Server attachment) {
-		//当有下一个客户端接入的时候 直接调用Server的accept方法，这样反复执行下去，保证多个客户端都可以阻塞
+		//当有下一个客户端接入的时候 直接调用Server的accept方法，这样反复执行下去，保证多个客户端都可以阻塞，相当于递归
+		//如果不调用此方法，只能处理一个方法
 		attachment.assc.accept(attachment, this);
 		read(asc);
+	}
+
+	//连接失败
+	@Override
+	public void failed(Throwable exc, Server attachment) {
+		exc.printStackTrace();
 	}
 
 	private void read(final AsynchronousSocketChannel asc) {
@@ -49,10 +68,6 @@ public class ServerCompletionHandler implements CompletionHandler<AsynchronousSo
 			e.printStackTrace();
 		}
 	}
-	
-	@Override
-	public void failed(Throwable exc, Server attachment) {
-		exc.printStackTrace();
-	}
+
 
 }

@@ -9,6 +9,9 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
+/**
+ * 继承Runnable是为了启动一个线程来轮询Selector
+ */
 public class Server implements Runnable{
 	//1 多路复用器（管理所有的通道）
 	private Selector seletor;
@@ -22,7 +25,7 @@ public class Server implements Runnable{
 			this.seletor = Selector.open();
 			//2 打开服务器通道
 			ServerSocketChannel ssc = ServerSocketChannel.open();
-			//3 设置服务器通道为非阻塞模式
+			//3 设置服务器通道为非阻塞模式,true是阻塞这样就和传统IO没什么区别了
 			ssc.configureBlocking(false);
 			//4 绑定地址
 			ssc.bind(new InetSocketAddress(port));

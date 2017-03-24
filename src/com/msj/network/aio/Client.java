@@ -6,6 +6,12 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * @author Vincent.M mengshaojie@188.com
+ * @date 2017/3/13 下午4:41
+ * @copyright ©2017 孟少杰 All Rights Reserved
+ * @desc AIO(NIO2.0) AIO它不需要通过多路复用器对注册的通道进行轮询操作即可实现异步读写，从而简化了NIO编程模型。
+ */
 public class Client implements Runnable{
 
 	private AsynchronousSocketChannel asc ;
