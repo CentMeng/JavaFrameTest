@@ -200,7 +200,6 @@ ReferenceCountUtil.release(msg);
   -  以太网帧的payload大于MTU进行IP分片 
 - TCP粘包、拆包问题解决方案（前两种解决方案netty已经实现）
   -  消息定长，例如每个报文的大小固定为200个字节，如果不够，空位补空格。（netty解决方案：[FixedLengthFrameDecoder](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/ende2)【定长】）
-
   ```
  .childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
@@ -214,7 +213,6 @@ ReferenceCountUtil.release(msg);
 		});
   ```
   -  在包尾部增加特殊字符进行分割，例如加回车等（netty解决方案：分隔符类[DelimiterBasedFrameDecoder](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/ende1)【自定义分隔符】）
-  
   ```
    .childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
