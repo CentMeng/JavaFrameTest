@@ -199,8 +199,10 @@ ReferenceCountUtil.release(msg);
   -  进行MSS大小的TCP分段
   -  以太网帧的payload大于MTU进行IP分片 
 - TCP粘包、拆包问题解决方案（前两种解决方案netty已经实现）
-  -  消息定长，例如每个报文的大小固定为200个字节，如果不够，空位补空格。（netty解决方案：[FixedLengthFrameDecoder](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/ende2)【定长】）
-  ```
+
+(1)  消息定长，例如每个报文的大小固定为200个字节，如果不够，空位补空格。（netty解决方案：[FixedLengthFrameDecoder](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/ende2)【定长】）
+
+```
  .childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			protected void initChannel(SocketChannel sc) throws Exception {
@@ -211,9 +213,10 @@ ReferenceCountUtil.release(msg);
 				sc.pipeline().addLast(new ServerHandler());
 			}
 		});
-  ```
-  -  在包尾部增加特殊字符进行分割，例如加回车等（netty解决方案：分隔符类[DelimiterBasedFrameDecoder](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/ende1)【自定义分隔符】）
-  ```
+```
+(2)  在包尾部增加特殊字符进行分割，例如加回车等（netty解决方案：分隔符类[DelimiterBasedFrameDecoder](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/ende1)【自定义分隔符】）
+
+```
    .childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			protected void initChannel(SocketChannel sc) throws Exception {
@@ -225,8 +228,8 @@ ReferenceCountUtil.release(msg);
 				sc.pipeline().addLast(new ServerHandler());
 			}
 		});
-  ```
-  -  将消息分为消息头和消息体，在消息头中包含表示消息总长度的字段，然后进行业务逻辑的处理（自定义协议【百度搜索netty自定义协议】）
+```
+(3)  将消息分为消息头和消息体，在消息头中包含表示消息总长度的字段，然后进行业务逻辑的处理（自定义协议【百度搜索netty自定义协议】）
  
 ### Netty核心技术之（编解码技术【传递对象】）
 编解码技术，说白了就是java序列化技术，序列化的目的就两个，第一进行网络传输，第二对象持久化。
@@ -318,9 +321,10 @@ webSocket将网络套接字引入到了客户端和服务端，众所周知，�
   -  第一种，使用长连接通道不断开的形式进行通信，也就是服务器和客户端的通道一直处于开启状态，如果服务器性能足够好，并且我们的客户端数量也比较少的情况下，还是推荐这种方式的。
   -  第二种，一次性批量提交数据，采用短连接方式。也就是我们会把数据保存在本地临时缓冲区或者临时表里，当达到临界值时进行一次性批量提交，又或者根据定时任务轮询提交，这种情况弊端是做不到实时性传输，在对实时性要求不高的应用程序中可以推荐使用。
   -  第三种，我们可以使用一种特殊的长连接，在指定某一时间之内（比如设置60秒），服务器与某台客户端没有任何通信（60秒内没有任何通信），则断开连接。下次连接则是客户端向服务器发送请求的时候，再次建立连接。但是，这种模式我们需要考虑2种因素：
-  （1）如何在超时（即服务器和客户端没有任何通信）后关闭通道？关闭通道后我们又如何再次建立连接？ ***[解决方案:如下代码](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/runtime/Client.java)***
+
+(1）如何在超时（即服务器和客户端没有任何通信）后关闭通道？关闭通道后我们又如何再次建立连接？ ***[解决方案:如下代码](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/network/netty/runtime/Client.java)***
   
-  ```Java
+```Java
   public void connect(){
 		try {
 			this.cf = b.connect("127.0.0.1", 8765).sync();
@@ -341,7 +345,7 @@ webSocket将网络套接字引入到了客户端和服务端，众所周知，�
 		
 		return this.cf;
 	}
-  ```
+```
   （2）客户端宕机，我们无需考虑，下次客户端重启之后我们就可以与服务器建立连接，但是服务器宕机时，我们的客户端如何与服务器建立连接？ ***解决方案:写个脚本，定时轮询，给服务器发连接，看服务器是否启动，启动了就重新创立连接。如果客户端是java的，可以通过spring的定时任务，定时看服务器好没好，好则保持通讯***
 
   ```
