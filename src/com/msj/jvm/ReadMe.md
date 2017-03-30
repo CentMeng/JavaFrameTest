@@ -172,6 +172,7 @@ CMS并不是独占的回收器（GC过程中，应用程序仍然在不停地工
 我们知道，标记清除算法有个缺点就是存在内存碎片的问题，那么CMS有个参数设置-XX:+UseCMSCompactAtFullCollection可以使CMS回收完成之后进行一次碎片整理，-XX:+CMSFullGCsBeforeCompaction参数设置进行多少次CMS回收之后，对内存进行一次压缩。
 #### G1回收器
 <img src = "./picture/G1回收器.png">
+
 ### Tomcat性能影响体验、性能监控工具
 通过[JMeter](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/jvm/doc/JMeter从入门到精通.doc)对Tomcat增加压力 不同的虚拟机参数应该会有不同的表现
 
