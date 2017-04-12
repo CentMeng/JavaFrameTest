@@ -9,5 +9,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="disruptor-3.3.2" level="project" />
     <orderEntry type="library" name="commons-logging-1.1.1" level="project" />
+    <orderEntry type="library" name="commons-pool2-2.3" level="project" />
+    <orderEntry type="library" name="hamcrest-core-1.3" level="project" />
+    <orderEntry type="library" name="jedis-2.7.2" level="project" />
+    <orderEntry type="library" name="junit-4.10" level="project" />
   </component>
 </module>
