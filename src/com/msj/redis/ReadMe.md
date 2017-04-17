@@ -211,6 +211,7 @@ zadd向有序集合中添加一个元素，该元素如果存在，则更新顺�
   expire name 5
   ttl name
 ```
+
 - persist 取消过期时间
 - select 选择数据库 数据库为0到15（一共16个数据库）默认进入的是0数据库【是逻辑划分不是物理划分即不是第一个数据库1个G，第二个数据库1个G，而是16个数据库供多少G，然后逻辑划分】
 
@@ -223,6 +224,7 @@ keys *
 select 1
 keys *
 ```
+
 - move [key][数据库下标] 将当前数据中的key转移到其他数据库中
 
 ```
@@ -230,18 +232,21 @@ move name 2
 select 2
 keys *
 ```
+
 - randomkey 随机返回数据库里的一个key
 - rename 重命名key
 
 ```
 rename name name3
 ```
+
 - echo 打印命令
 - dbsize 查看数据库的key数量
 
 ```
 dbsize
 ```
+
 - info获取数据库信息
 
 ```
@@ -249,11 +254,13 @@ info
 其中的信息解释：
 cluster_enabled:0 0表示没开启，此处表示没开启集群模式
 ```
+
 - config get 实时存储收到的请求（返回相关的配置信息）
 
 ```
 config get * 返回所有配置
-``` 
+```
+
 - flushdb 清空当前数据库，flushall清空所有数据库
 
 ### Redis的安全性
