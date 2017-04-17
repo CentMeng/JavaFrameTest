@@ -26,11 +26,14 @@ public class TestClusterRedis {
 	    jedisClusterNode.add(new HostAndPort("192.168.1.171", 7006));
 	    //GenericObjectPoolConfig goConfig = new GenericObjectPoolConfig();
 	    //JedisCluster jc = new JedisCluster(jedisClusterNode,2000,100, goConfig);
+		//spring可以配置
 	    JedisPoolConfig cfg = new JedisPoolConfig();
 	    cfg.setMaxTotal(100);
 	    cfg.setMaxIdle(20);
 	    cfg.setMaxWaitMillis(-1);
-	    cfg.setTestOnBorrow(true); 
+	    cfg.setTestOnBorrow(true);
+	    //第一个参数是各个节点，第二个参数是超时时间，第三个参数是重定向次数即失败后重新连接多少次，第四个参数是连接池
+		//java设置完后redis的配置文件就不起作用了
 	    JedisCluster jc = new JedisCluster(jedisClusterNode,6000,1000,cfg);	    
 	    
 	    System.out.println(jc.set("age","20"));
