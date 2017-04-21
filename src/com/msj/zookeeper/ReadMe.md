@@ -290,4 +290,6 @@ deletingChildrenIfNeeded、guaranteed、withVersion、forPath等等
 
 #### 分布式数据共享
 
+> ZooKeeper文件做修改，Client端会接收到通知
+
 - 示例：[cluster](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/zookeeper/curator/cluster)
