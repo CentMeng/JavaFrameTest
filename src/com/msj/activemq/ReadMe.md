@@ -116,7 +116,7 @@ TemporaryTopic createTemporaryTopic
 [Zookeeper+ActiveMQ](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/activemq/doc/activemq集群配置文档.pdf)
 
 ### 最好用的模式：network connector
-[网络连接模式](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/activemq/doc/ActiveMQ集群：网络连接模式\(network connector\)详解.docx)
+[网络连接模式](https://github.com/CentMeng/JavaFrameTest/tree/master/src/com/msj/activemq/doc/ActiveMQ集群：网络连接模式network_connector详解.docx)
 
 ## MQ用途
 - 消息中间件

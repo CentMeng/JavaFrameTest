@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="  
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:property-placeholder location="classpath:redis.properties" />
+	<context:component-scan base-package="com.x.redis.dao">
+	</context:component-scan>
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxActive}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+
+	<bean id="hostport1" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg name="host" value="10.16.68.92" />
+		<constructor-arg name="port" value="7770" />
+	</bean>
+	<bean id="hostport2" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg name="host" value="10.16.68.92" />
+		<constructor-arg name="port" value="7771" />
+	</bean>
+	<bean id="hostport3" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg name="host" value="10.16.68.92" />
+		<constructor-arg name="port" value="7772" />
+	</bean>
+	<bean id="hostport4" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg name="host" value="10.16.68.92" />
+		<constructor-arg name="port" value="7773" />
+	</bean>
+	<bean id="hostport5" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg name="host" value="10.16.68.92" />
+		<constructor-arg name="port" value="7774" />
+	</bean>
+	<bean id="hostport6" class="redis.clients.jedis.HostAndPort">
+		<constructor-arg name="host" value="10.16.68.92" />
+		<constructor-arg name="port" value="7775" />
+	</bean>
+
+	<bean id="redisCluster" class="redis.clients.jedis.JedisCluster">
+		<constructor-arg name="nodes">
+			<set>
+				<ref bean="hostport1" />
+				<ref bean="hostport2" />
+				<ref bean="hostport3" />
+				<ref bean="hostport4" />
+				<ref bean="hostport5" />
+				<ref bean="hostport6" />
+			</set>
+		</constructor-arg>
+		<constructor-arg name="timeout" value="6000" />
+		<constructor-arg name="poolConfig">
+			<ref bean="jedisPoolConfig" />
+		</constructor-arg>
+	</bean>
+</beans>
