@@ -13,6 +13,8 @@ public class MultiSyncCommonOneTest {
     public  void addCount(){
 //    public  void addCount(String lock){
 //        synchronized (lock) {
+        //或者 synchronized (this) {
+        //或者 synchronized（MultiSyncCommonOneTest.class）{
             count++;
 //        }
         System.out.println(""+count);
