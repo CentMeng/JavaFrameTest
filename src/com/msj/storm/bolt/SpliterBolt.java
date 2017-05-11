@@ -34,7 +34,7 @@ public class SpliterBolt implements IRichBolt {
 	public void execute(Tuple tuple) {
 		try {
 			String subjects = tuple.getStringByField("subjects");
-			
+			//放开此处可以模拟splitbolt错误情况
 //			if(!flag && subjects.equals("flume,activiti")){
 //				flag = true;
 //				int a = 1/0;
