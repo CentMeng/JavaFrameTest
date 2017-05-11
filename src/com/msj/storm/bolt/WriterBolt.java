@@ -43,10 +43,11 @@ public class WriterBolt implements IRichBolt {
 //		List<String> list = (List<String>)tuple.getValueByField("word");
 //		System.out.println("======================" + list);
 		try {
-			if(!flag && word.equals("hadoop")){
-				flag = true;
-				int a = 1/0;
-			}
+			//放开此处可以模拟WriterBolt错误情况
+//			if(!flag && word.equals("hadoop")){
+//				flag = true;
+//				int a = 1/0;
+//			}
 			writer.write(word);
 			writer.write("\r\n");
 			writer.flush();
