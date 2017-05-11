@@ -1,4 +1,4 @@
-package bhz.drpc2;
+package com.msj.storm.drpc.reach;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
