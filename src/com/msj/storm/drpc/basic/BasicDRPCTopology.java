@@ -1,4 +1,4 @@
-package bhz.drpc1;
+ package com.msj.storm.drpc.basic;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
