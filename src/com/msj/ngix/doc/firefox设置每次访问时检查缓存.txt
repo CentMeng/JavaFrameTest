@@ -1,0 +1,9 @@
+1.在firefox的地址栏上输入about:config回车
+2.找到browser.cache.check_doc_frequency选项，双击将3改成1保存即可。
+
+ 选项每个值都是什么含义的。请看下面的解释：
+
+0: Once per session 每个进程一次 每次启动Firefox时检查
+1: Each time 【开发人员强烈建议开这个】每次访问此页时检查
+2: Never
+3: When appropriate/automatically 
